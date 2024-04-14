@@ -67,7 +67,7 @@ public class EmployeeService {
             return ErrorKinds.SUCCESS;
         }
 
-        // パスワードに値が設定されている場合
+        // パスワードに値が設定されている場合パスワードチェック
         ErrorKinds result = employeePasswordCheck(employee);
         if (ErrorKinds.CHECK_OK != result) {
             return result;

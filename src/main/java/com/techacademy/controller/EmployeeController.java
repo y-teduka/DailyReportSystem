@@ -114,20 +114,26 @@ public class EmployeeController {
     @GetMapping(value = "/{code}/update")
     public String edit(@PathVariable String code, Employee employee, Model model) {
 
-        model.addAttribute("employee", employeeService.findByCode(code));
+        if (code == null) {
+            // codeがnullの場合
+            model.addAttribute("employee",employee);
+        } else {
+            // codeがnull以外
+            model.addAttribute("employee", employeeService.findByCode(code));
+        }
         return "employees/update";
     }
 
     // 従業員更新処理
     @PostMapping(value = "/{code}/update")
-    public String update(@PathVariable String code, @Validated Employee employee, BindingResult res, Model model) {
-
+    public String update(@PathVariable String code, String error, @Validated Employee employee, BindingResult res,
+            Model model) {
         // 入力チェック
         if (res.hasErrors()) {
+            code = null;
             return edit(code, employee, model);
         }
         ErrorKinds result = employeeService.update(code, employee);
-
         if (ErrorMessage.contains(result)) {
             // エラーに沿ったエラーメッセージを出力する
             model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
