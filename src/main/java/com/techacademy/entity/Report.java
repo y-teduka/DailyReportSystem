@@ -56,7 +56,7 @@ public class Report {
     private Employee employee;
 
     // 削除フラグ
-    @Column(nullable = false)
+    @Column(columnDefinition = "TINYINT",nullable = false)
     private boolean deleteFlg;
 
     // 登録日時

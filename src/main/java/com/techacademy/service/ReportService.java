@@ -29,11 +29,10 @@ public class ReportService {
     // 日報登録
     @Transactional
     public ErrorKinds save(Report report, Employee employee, UserDetail userDetail) {
-        
-        //Employee employee= userDetail.getEmployee();
+
         // 日報重複チェック
         for (Report re : findByEmployee(employee)) {
-            if (re.getReportDate() == report.getReportDate()) {
+            if (re.getReportDate().equals(report.getReportDate())) {
 
                 return ErrorKinds.DATECHECK_ERROR;
             }
@@ -49,8 +48,18 @@ public class ReportService {
     }
 
     // 日報更新
-
-    // 日報削除
+    @Transactional
+    public ErrorKinds update(Integer id,Report report, Employee employee) {
+       
+        //idでDBを検索
+        Optional<Report> option=reportRepository.findById(id);
+        //検索したidのCreateAtを取得してreportエンティティに格納
+        report.setCreatedAt(option.get().getCreatedAt());
+        LocalDateTime now =LocalDateTime.now();
+        report.setUpdatedAt(now);
+        reportRepository.save(report);
+        return ErrorKinds.SUCCESS;
+    }
 
     // 日報一覧表示処理
     public List<Report> findAll() {
@@ -62,4 +71,22 @@ public class ReportService {
         List<Report> list = reportRepository.findByEmployee(employee);
         return list;
     }
+
+    // 日報削除処理
+    @Transactional
+    public Report delete(Integer id) {
+        Report report =findById(id);
+        report.setDeleteFlg(true);
+
+        return reportRepository.save(report);
+    }
+
+    // idで１件検索
+    public Report findById(Integer id) {
+        Optional<Report> option = reportRepository.findById(id);
+        // 取得できなかった場合はnullを返す
+        Report report = option.orElse(null);
+        return report;
+    }
+
 }

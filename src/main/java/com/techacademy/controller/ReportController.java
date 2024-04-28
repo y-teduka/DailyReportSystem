@@ -1,6 +1,5 @@
 package com.techacademy.controller;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -10,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -52,20 +52,64 @@ public class ReportController {
     @PostMapping(value = "/add")
     public String add(@Validated Report report, BindingResult res, Employee employee,
             @AuthenticationPrincipal UserDetail userDetail, Model model) {
-        
-       
-        
+        report.setEmployee(userDetail.getEmployee());
+        employee = userDetail.getEmployee();
         // 入力チェック
         if (res.hasErrors()) {
             return create(report, userDetail, model);
         }
         // データ登録
-        ErrorKinds result = reportService.save(report,employee,userDetail);
+        ErrorKinds result = reportService.save(report, employee, userDetail);
         // 業務チェック
         if (ErrorMessage.contains(result)) {
             model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
             return create(report, userDetail, model);
         }
+        return "redirect:/reports";
+    }
+
+    // 日報詳細画面
+    @GetMapping(value = "/{id}/")
+    public String detail(@PathVariable Integer id, Model model) {
+        model.addAttribute("report", reportService.findById(id));
+        return "reports/detail";
+    }
+
+    // 日報削除処理
+    @PostMapping(value = "/{id}/delete")
+    public String delete(@PathVariable Integer id, Model model) {
+        reportService.delete(id);
+        return "redirect:/reports";
+    }
+
+    // 日報更新画面
+    @GetMapping(value = "/{id}/update")
+    public String edit(@PathVariable Integer id, Report report,Model model) {
+        // 遷移元によって処理を分ける
+        if (id == null) {
+            // idがnullの場合
+            return "reports/update";
+        } else {
+            // nullでない場合
+            model.addAttribute("report", reportService.findById(id));
+            return "reports/update";
+        }
+    }
+
+    // 日報更新処理
+    @PostMapping(value = "/{id}/update")
+    public String update(@PathVariable Integer id,@Validated Report report, BindingResult res,Employee employee,
+            Model model) {
+        // 入力チェック
+        if (res.hasErrors()) {
+            // エラーの場合idにnullを入れて更新画面に遷移
+            id = null;
+            return edit(id, report,model);
+        }
+        
+        //employee.setName(report.getEmployee().getName());
+        employee=report.getEmployee();
+        reportService.update(id,report,employee);
         return "redirect:/reports";
     }
 
