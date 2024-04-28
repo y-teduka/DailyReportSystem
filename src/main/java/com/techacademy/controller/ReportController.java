@@ -107,8 +107,7 @@ public class ReportController {
             return edit(id, report,model);
         }
         
-        //employee.setName(report.getEmployee().getName());
-        employee=report.getEmployee();
+        employee.set(report.getEmployee();
         reportService.update(id,report,employee);
         return "redirect:/reports";
     }
