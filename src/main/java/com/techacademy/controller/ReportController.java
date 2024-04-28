@@ -106,8 +106,6 @@ public class ReportController {
             id = null;
             return edit(id, report,model);
         }
-        
-        employee.set(report.getEmployee();
         reportService.update(id,report,employee);
         return "redirect:/reports";
     }
