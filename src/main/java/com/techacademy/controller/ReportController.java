@@ -1,7 +1,6 @@
 package com.techacademy.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -84,7 +83,7 @@ public class ReportController {
 
     // 日報更新画面
     @GetMapping(value = "/{id}/update")
-    public String edit(@PathVariable Integer id, Report report,Model model) {
+    public String edit(@PathVariable Integer id, Report report, Model model) {
         // 遷移元によって処理を分ける
         if (id == null) {
             // idがnullの場合
@@ -98,15 +97,24 @@ public class ReportController {
 
     // 日報更新処理
     @PostMapping(value = "/{id}/update")
-    public String update(@PathVariable Integer id,@Validated Report report, BindingResult res,Employee employee,
-            Model model) {
+    public String update(@PathVariable Integer id, @Validated Report report, BindingResult res,
+            @AuthenticationPrincipal UserDetail userDetail, Employee employee, Model model) {
         // 入力チェック
         if (res.hasErrors()) {
             // エラーの場合idにnullを入れて更新画面に遷移
             id = null;
-            return edit(id, report,model);
+            return edit(id, report, model);
         }
-        reportService.update(id,report,employee);
+        employee = userDetail.getEmployee();
+        report.setEmployee(employee);
+        ErrorKinds result = reportService.update(id, report, employee);
+
+        // 業務チェック
+        if (ErrorMessage.contains(result)) {
+            model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
+            id = null;
+            return edit(id, report, model);
+        }
         return "redirect:/reports";
     }
 
