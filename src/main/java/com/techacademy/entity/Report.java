@@ -45,9 +45,9 @@ public class Report {
     private String title;
 
     // 内容
-    @Column(nullable = false)
-    @NotEmpty
     @Length(max = 600)
+    @Column(columnDefinition = "LONGTEXT",nullable = false)
+    @NotEmpty
     private String content;
 
     // 社員番号

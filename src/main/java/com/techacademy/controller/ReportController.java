@@ -1,5 +1,7 @@
 package com.techacademy.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -34,9 +36,18 @@ public class ReportController {
 
     // 日報一覧画面
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("listSize", reportService.findAll().size());
-        model.addAttribute("reportList", reportService.findAll());
+    public String list(Employee employee, @AuthenticationPrincipal UserDetail userDetail, Model model) {
+
+        if (userDetail.getEmployee().getRole() == Employee.Role.ADMIN) {
+            model.addAttribute("listSize", reportService.findAll().size());
+            model.addAttribute("reportList", reportService.findAll());
+            return "reports/list";
+        }
+        employee = userDetail.getEmployee();
+        List<Report> reportList = reportService.findByEmployee(employee);
+
+        model.addAttribute("listSize", reportList.size());
+        model.addAttribute("reportList", reportList);
         return "reports/list";
     }
 
@@ -105,9 +116,12 @@ public class ReportController {
             id = null;
             return edit(id, report, model);
         }
-        employee = userDetail.getEmployee();
-        report.setEmployee(employee);
-        ErrorKinds result = reportService.update(id, report, employee);
+        //employee = userDetail.getEmployee();
+         
+        Report nyuuryoku = report;
+        report = reportService.findById(id);
+        employee=report.getEmployee();
+        ErrorKinds result = reportService.update(id, report, nyuuryoku,employee);
 
         // 業務チェック
         if (ErrorMessage.contains(result)) {

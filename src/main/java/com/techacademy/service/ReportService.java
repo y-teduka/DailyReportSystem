@@ -48,13 +48,16 @@ public class ReportService {
 
     // 日報更新
     @Transactional
-    public ErrorKinds update(Integer id, Report report, Employee employee) {
+    public ErrorKinds update(Integer id, Report report,Report  nyuuryoku, Employee employee) {
 
         // 日報重複チェック
         for (Report re : findByEmployee(employee)) {
-            if (re.getReportDate().equals(report.getReportDate())) {
+            // データベースのReportDateと入力したReportDateが同じか
+            if (re.getReportDate().equals(nyuuryoku.getReportDate())) {
+                if(!(re.getId().equals(nyuuryoku.getId()))) {
 
                 return ErrorKinds.DATECHECK_ERROR;
+                }
             }
         }
         // idでDBを検索
@@ -63,6 +66,7 @@ public class ReportService {
         report.setCreatedAt(option.get().getCreatedAt());
         LocalDateTime now = LocalDateTime.now();
         report.setUpdatedAt(now);
+        report.setReportDate(nyuuryoku.getReportDate());
         reportRepository.save(report);
         return ErrorKinds.SUCCESS;
     }

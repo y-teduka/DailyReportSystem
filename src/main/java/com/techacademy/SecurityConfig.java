@@ -22,6 +22,7 @@ public class SecurityConfig {
         ).authorizeHttpRequests(
                 auth -> auth.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // css等は未ログインでアクセス可
                         .requestMatchers("/employees/**").hasAnyAuthority("ADMIN").anyRequest().authenticated()); // その他はログイン必要
+        //一般権限は自身が登録した日報のみ表示可
 
         return http.build();
     }

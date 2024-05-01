@@ -38,8 +38,8 @@
                                         </p>
                                         <div class="col-md-7">
                                             <div class="align-middle" th:text="*{employee.name}"></div>
-                                            <input type="hidden" th:field="*{employee.name}" id="employeeCode"
-                                                name="employeeCode">
+                                            <input type="hidden" th:field="*{employee.name}" id="employeeName"
+                                                name="employeeName">
                                         </div>
                                     </div>
                                     <div class="mb-3">
@@ -47,7 +47,8 @@
                                             <label class="form-label" for="title">タイトル</label>
                                         </p>
                                         <div class="col-md-7">
-                                            <input class="form-control" type="text" th:field="*{title}" th:errorclass="err" id="title" value="*{title}">
+                                            <input class="form-control" type="text" th:field="*{title}"
+                                                th:errorclass="err" id="title" value="*{title}">
                                             <span th:errors="*{title}" class="text-danger"></span>
                                         </div>
                                     </div>

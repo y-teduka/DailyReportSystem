@@ -27,8 +27,9 @@
                                         <div class="col-md-7">
                                             <input style="width:200px" class="form-control" type="date"
                                                 th:field="*{reportDate}" id="reportDate">
-                               <span th:errors="*{reportDate}" class="text-danger"></span>
-                               <span th:if="${reportDateError} neq null" th:text="${reportDateError}" class="text-danger"></span>            
+                                            <span th:errors="*{reportDate}" class="text-danger"></span>
+                                            <span th:if="${reportDateError} neq null" th:text="${reportDateError}"
+                                                class="text-danger"></span>
                                         </div>
                                     </div>
                                     <div class="mb-3">
@@ -37,7 +38,7 @@
                                         </p>
                                         <div class="col-md-7">
                                             <div class="align-middle" th:text="${employee.name}"></div>
-                                              <input type="hidden" id="employeeCode" name="employeeCode">
+                                            <input type="hidden" id="employeeCode" name="employeeCode">
                                         </div>
                                     </div>
                                     <div class="mb-3">
@@ -46,6 +47,7 @@
                                         </p>
                                         <div class="col-md-7">
                                             <input class="form-control" type="text" th:field="*{title}" id="title">
+
                                             <span th:errors="*{title}" class="text-danger"></span>
                                         </div>
                                     </div>
@@ -53,9 +55,10 @@
                                         <p class="mb-1">
                                             <label class="form-label" for="content">内容</label>
                                         </p>
-                                        <textarea style="height:200px" "width:100px" id="content" name="content"
-                                            class="form-control"></textarea>
-                                        <div class="col-md-4">
+                                        
+                                            <textarea style="height:200px" "width:100px" th:field="*{content}" id="content" name="content"
+                                                class="form-control"></textarea>
+                                                <div class="col-md-4">
                                             <span th:errors="*{content}" class="text-danger"></span>
                                         </div>
                                     </div>
